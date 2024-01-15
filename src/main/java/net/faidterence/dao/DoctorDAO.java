@@ -3,6 +3,7 @@ package net.faidterence.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.faidterence.model.Doctor;
@@ -59,5 +60,46 @@ public class DoctorDAO {
 	           e.printStackTrace();
 	        }
 	    }
+	    
+	    
+	    public void displayDoctor(Long id) {
+	        // Step 1: Establishing a Connection
+	        try (Connection connection = connectToDB();
+	             // Step 2: Create a statement using connection object
+	             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_DOCTOR_BY_ID);) {
+	            preparedStatement.setLong(1, id);
+	            System.out.println(preparedStatement);
+	            // Step 3: Execute the query or update query
+	            ResultSet rs = preparedStatement.executeQuery();
+
+	            // Step 4: Process the ResultSet object.
+	            while (rs.next()) {
+	                Long doctorId = rs.getLong("id");
+	                String firstName = rs.getString("first_name");
+	                String lastName = rs.getString("last_name");
+	                String email = rs.getString("email");
+	                String specialization = rs.getString("specialization");
+	                String phoneNumber = rs.getString("phone_number");
+	                String address = rs.getString("address");
+	                String licenseNumber = rs.getString("license_number");
+
+	                // Assuming Doctor class has a constructor like: Doctor(Long id, String firstName, String lastName, String email, String specialization, String phoneNumber, String address, String licenseNumber)
+	                Doctor doctor = new Doctor(firstName, lastName, email, specialization, phoneNumber, address, licenseNumber);
+
+	                // Displaying the information
+	                System.out.println("Doctor ID: " + doctor.getId());
+	                System.out.println("First Name: " + doctor.getFirstName());
+	                System.out.println("Last Name: " + doctor.getLastName());
+	                System.out.println("Email: " + doctor.getEmail());
+	                System.out.println("Specialization: " + doctor.getSpecialization());
+	                System.out.println("Phone Number: " + doctor.getPhoneNumber());
+	                System.out.println("Address: " + doctor.getAddress());
+	                System.out.println("License Number: " + doctor.getLicenseNumber());
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
 
 }
