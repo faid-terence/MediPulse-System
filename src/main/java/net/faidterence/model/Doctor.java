@@ -21,7 +21,16 @@ public class Doctor {
         // Default constructor
     }
     
-    
+    public Doctor(long id ,String firstName, String lastName, String specialization, String email, String phoneNumber, String address, String licenseNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.specialization = specialization;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.licenseNumber = licenseNumber;
+    }
+
     
     public Doctor(String firstName, String lastName, String specialization, String email, String phoneNumber, String address, String licenseNumber) {
         this.firstName = firstName;
