@@ -117,12 +117,18 @@ public class DoctorDAO {
 
 	            // Step 4: Process the ResultSet object.
 	            while (rs.next()) {
-	                int id = rs.getInt("id");
-	                String name = rs.getString("name");
+	                Long id = rs.getLong("id");
+	                String firstName = rs.getString("firstName");
+	                String lastName = rs.getString("lastName");
 	                String specialization = rs.getString("specialization");
-	                String hospital = rs.getString("hospital");
+	                String email = rs.getString("email");
+	                String phoneNumber = rs.getString("phoneNumber");
+	                String address = rs.getString("address");
+	                String licenseNumber = rs.getString("licenseNumber");
 
-	                doctors.add(new Doctor(id, name, specialization, hospital));
+
+	                doctors.add(new Doctor(id, firstName, lastName, specialization, email, phoneNumber, address, licenseNumber));
+
 	            }
 	        } catch (SQLException e) {
 	            printSQLException(e);
@@ -144,7 +150,7 @@ public class DoctorDAO {
 	    public boolean updateDoctor(Doctor doctor) throws SQLException {
 	        boolean rowUpdated;
 	        try (Connection connection = connectToDB();
-	             PreparedStatement statement = connection.prepareStatement(UPDATE_DOCTOR_SQL)) {
+	             PreparedStatement statement = connection.prepareStatement(UPDATE_DOCTOR_SQL )) {
 
 	            statement.setString(1, doctor.getFirstName());
 	            statement.setString(2, doctor.getLastName());
