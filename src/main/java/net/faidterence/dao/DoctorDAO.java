@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.faidterence.model.Doctor;
 
@@ -98,6 +100,81 @@ public class DoctorDAO {
 	            }
 	        } catch (SQLException e) {
 	            e.printStackTrace();
+	        }
+	    }
+	    
+	    public List<Doctor> selectAllDoctors() {
+	        // using try-with-resources to avoid closing resources (boilerplate code)
+	        List<Doctor> doctors = new ArrayList<>();
+
+	        // Step 1: Establishing a Connection
+	        try (Connection connection = connectToDB();
+	             // Step 2: Create a statement using connection object
+	             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_DOCTORS);) {
+	            System.out.println(preparedStatement);
+	            // Step 3: Execute the query or update query
+	            ResultSet rs = preparedStatement.executeQuery();
+
+	            // Step 4: Process the ResultSet object.
+	            while (rs.next()) {
+	                int id = rs.getInt("id");
+	                String name = rs.getString("name");
+	                String specialization = rs.getString("specialization");
+	                String hospital = rs.getString("hospital");
+
+	                doctors.add(new Doctor(id, name, specialization, hospital));
+	            }
+	        } catch (SQLException e) {
+	            printSQLException(e);
+	        }
+	        return doctors;
+	    }
+	    
+	    public boolean deleteDoctor(int id) throws SQLException {
+	        boolean rowDeleted;
+	        try (Connection connection = connectToDB();
+	             PreparedStatement statement = connection.prepareStatement(DELETE_DOCTOR_SQL);) {
+	            statement.setInt(1, id);
+	            rowDeleted = statement.executeUpdate() > 0;
+	        }
+	        return rowDeleted;
+	    }
+	    
+	    
+	    public boolean updateDoctor(Doctor doctor) throws SQLException {
+	        boolean rowUpdated;
+	        try (Connection connection = connectToDB();
+	             PreparedStatement statement = connection.prepareStatement(UPDATE_DOCTOR_SQL)) {
+
+	            statement.setString(1, doctor.getFirstName());
+	            statement.setString(2, doctor.getLastName());
+	            statement.setString(3, doctor.getSpecialization());
+	            statement.setString(4, doctor.getEmail());
+	            statement.setString(5, doctor.getPhoneNumber());
+	            statement.setString(6, doctor.getAddress());
+	            statement.setString(7, doctor.getLicenseNumber());
+	            statement.setLong(8, doctor.getId());
+
+	            rowUpdated = statement.executeUpdate() > 0;
+	        }
+	        return rowUpdated;
+	    }
+
+	    
+	    
+	    private void printSQLException(SQLException ex) {
+	        for (Throwable e: ex) {
+	            if (e instanceof SQLException) {
+	                e.printStackTrace(System.err);
+	                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+	                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+	                System.err.println("Message: " + e.getMessage());
+	                Throwable t = ex.getCause();
+	                while (t != null) {
+	                    System.out.println("Cause: " + t);
+	                    t = t.getCause();
+	                }
+	            }
 	        }
 	    }
 
