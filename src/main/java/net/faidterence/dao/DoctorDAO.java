@@ -64,7 +64,8 @@ public class DoctorDAO {
 	    }
 	    
 	    
-	    public void displayDoctor(Long id) {
+	    public Doctor selectDoctor(Long id) {
+	        Doctor doctor = null;
 	        // Step 1: Establishing a Connection
 	        try (Connection connection = connectToDB();
 	             // Step 2: Create a statement using connection object
@@ -76,33 +77,22 @@ public class DoctorDAO {
 
 	            // Step 4: Process the ResultSet object.
 	            while (rs.next()) {
-	                Long doctorId = rs.getLong("id");
-	                String firstName = rs.getString("first_name");
-	                String lastName = rs.getString("last_name");
-	                String email = rs.getString("email");
+	                String firstName = rs.getString("firstName");
+	                String lastName = rs.getString("lastName");
 	                String specialization = rs.getString("specialization");
-	                String phoneNumber = rs.getString("phone_number");
+	                String email = rs.getString("email");
+	                String phoneNumber = rs.getString("phoneNumber");
 	                String address = rs.getString("address");
-	                String licenseNumber = rs.getString("license_number");
+	                String licenseNumber = rs.getString("licenseNumber");
 
-	                // Assuming Doctor class has a constructor like: Doctor(Long id, String firstName, String lastName, String email, String specialization, String phoneNumber, String address, String licenseNumber)
-	                Doctor doctor = new Doctor(firstName, lastName, email, specialization, phoneNumber, address, licenseNumber);
-
-	                // Displaying the information
-	                System.out.println("Doctor ID: " + doctor.getId());
-	                System.out.println("First Name: " + doctor.getFirstName());
-	                System.out.println("Last Name: " + doctor.getLastName());
-	                System.out.println("Email: " + doctor.getEmail());
-	                System.out.println("Specialization: " + doctor.getSpecialization());
-	                System.out.println("Phone Number: " + doctor.getPhoneNumber());
-	                System.out.println("Address: " + doctor.getAddress());
-	                System.out.println("License Number: " + doctor.getLicenseNumber());
+	                doctor = new Doctor(id, firstName, lastName, specialization, email, phoneNumber, address, licenseNumber);
 	            }
 	        } catch (SQLException e) {
-	            e.printStackTrace();
+	            printSQLException(e);
 	        }
+	        return doctor;
 	    }
-	    
+
 	    public List<Doctor> selectAllDoctors() {
 	        // using try-with-resources to avoid closing resources (boilerplate code)
 	        List<Doctor> doctors = new ArrayList<>();
@@ -136,17 +126,17 @@ public class DoctorDAO {
 	        return doctors;
 	    }
 	    
-	    public boolean deleteDoctor(int id) throws SQLException {
-	        boolean rowDeleted;
-	        try (Connection connection = connectToDB();
-	             PreparedStatement statement = connection.prepareStatement(DELETE_DOCTOR_SQL);) {
-	            statement.setInt(1, id);
-	            rowDeleted = statement.executeUpdate() > 0;
-	        }
-	        return rowDeleted;
-	    }
-	    
-	    
+//	    public boolean deleteDoctor(Long id) throws SQLException {
+//	        boolean rowDeleted;
+//	        try (Connection connection = connectToDB();
+//	             PreparedStatement statement = connection.prepareStatement(DELETE_DOCTOR_SQL);) {
+//	            statement.setLongl(1, id);
+//	            rowDeleted = statement.executeUpdate() > 0;
+//	        }
+//	        return rowDeleted;
+//	    }
+//	    
+//	    
 	    public boolean updateDoctor(Doctor doctor) throws SQLException {
 	        boolean rowUpdated;
 	        try (Connection connection = connectToDB();
